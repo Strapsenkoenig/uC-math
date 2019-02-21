@@ -1,5 +1,5 @@
 #include <math.h>
-#include <stdint.h>
+#include <stddef.h>
 #include "quaternions.h"
 #include "return_values.h"
 
@@ -21,7 +21,7 @@ quat_normalize (float * const p_tuple, int8_t const tuple_size, float const tole
             length += p_tuple[i] * p_tuple[i];
         }    
     
-        length = sqrtf(length);
+        length = sqrt(length);
 
         if(length - 1.0f > tolerance)
         {
@@ -38,7 +38,7 @@ quat_normalize (float * const p_tuple, int8_t const tuple_size, float const tole
 }
 
 int8_t 
-quat_mult(float * const p_result, float const * const p_quat_l, float const * const p_quat_r)
+quat_mult (float * const p_result, float const * const p_quat_l, float const * const p_quat_r)
 {
     int8_t result = EXIT_FAILURE;
 
@@ -63,23 +63,24 @@ quat_mult(float * const p_result, float const * const p_quat_l, float const * co
 }
 
 int8_t
-quat_from_axis_angle (float * const p_result, float const * const p_vect, float theta)
+quat_from_axis_angle (float * const p_result, float const * const p_vect, float theta_in)
 {
     int8_t result = EXIT_FAILURE;
 
     if(NULL != p_result
     && NULL != p_vect)
     {
-        quat_normalize(p_vect, 3, QUAT_STD_TOLERANCE);
+        float theta = deg_2_rad(theta_in);
+        quat_normalize((float * const)p_vect, 3, QUAT_STD_TOLERANCE);
         
         theta /= 2;
-        float sin_theta = sinf(theta);
+        float sin_theta = sin(theta);
 
         p_result[0] = cos(theta);
     
         for(int8_t i = 0; i < 3; i++)
         {
-         p_result[i+1] = p_pect[i] * sin_theta;
+         p_result[i+1] = p_vect[i] * sin_theta;
         }
         
         result = EXIT_SUCCESS;
@@ -108,7 +109,7 @@ quat_conjugate (float * const p_result, float const * const p_quat)
 }
 
 int8_t
-quat_vect_mult(float * const p_result, float const * const p_quat, float const * const p_vect)
+quat_vect_mult (float * const p_result, float const * const p_quat, float const * const p_vect)
 {
     int8_t result = EXIT_FAILURE;
 
@@ -138,7 +139,7 @@ quat_vect_mult(float * const p_result, float const * const p_quat, float const *
 }
 
 int8_t
-quat_to_axis_angle(float * const p_vect, float const * const p_theta, float const * const p_quat)
+quat_to_axis_angle (float * const p_vect, float * const p_theta, float const * const p_quat)
 {
     int8_t result = EXIT_FAILURE;
     
@@ -146,7 +147,7 @@ quat_to_axis_angle(float * const p_vect, float const * const p_theta, float cons
     && NULL != p_theta
     && NULL != p_quat)
     {
-        *p_theta = acosf(p_quat[0]) * 2.0f;
+        *p_theta = rad_2_deg(acos(p_quat[0]) * 2.0f);
         
         for(int8_t i = 0; i < 3; i++)
         {
@@ -159,4 +160,16 @@ quat_to_axis_angle(float * const p_vect, float const * const p_theta, float cons
     } 
 
     return result;
+}
+
+float 
+deg_2_rad (float const deg)
+{
+    return deg * M_PI/180.0f;
+}
+
+float 
+rad_2_deg (float const rad)
+{
+    return rad * 180.0f/M_PI;
 }

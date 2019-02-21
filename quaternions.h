@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 /****************************************************************************//**
 \brief          This function normalizes a tupel.
 
@@ -61,7 +63,7 @@ int8_t quat_mult(float * const p_result, float const * const p_quat_l, float con
                 quaternion will be stored. 
 \param[in]      p_vect A pointer that points to the vector that represents 
                 the axis of rotation.
-\param[in]      theta The angle of rotation represented in degrees.
+\param[in]      theta_in The angle of rotation represented in degrees.
 
 \retval         #EXIT_FAILURE if \p p_result if NULL, 
                 or if \p p_vect is NULL.
@@ -70,7 +72,7 @@ int8_t quat_mult(float * const p_result, float const * const p_quat_l, float con
 \note           The vector \p p_vect does not have to be a unit vector. It 
                 will be scaled appropriately inside the function.          
 ********************************************************************************/
-int8_t quat_from_axis_angle (float * const p_result, float const * const p_vect, float theta);
+int8_t quat_from_axis_angle(float * const p_result, float const * const p_vect, float theta_in);
 
 /****************************************************************************//**
 \brief          This function creates a conjugate of a quaternion.
@@ -134,4 +136,8 @@ int8_t quat_vect_mult(float * const p_result, float const * const p_quat, float 
 \note           The rotation axis vector will be normalized before stored 
                 in \p p_vect.          
 ********************************************************************************/
-int8_t quat_to_axis_angle(float * const p_vect, float const * const p_theta, float const * const p_quat);
+int8_t quat_to_axis_angle(float * const p_vect, float * const p_theta, float const * const p_quat);
+
+float deg_2_rad(float const deg);
+
+float rad_2_deg(float const rad);
